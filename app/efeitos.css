@@ -43,3 +43,110 @@ h2.rv.in .w > span{transform:none}
   .foco-card.seq,.tile.seq{transition:border-color .25s}
   .king .casa{display:none}
 }
+
+/* ===== EFEITOS SEM DOURADO (apague este bloco pra voltar ao visual antigo) ===== */
+.tabuleiro i{background-image:conic-gradient(rgba(255,255,255,.05) 25%,transparent 0 50%,rgba(255,255,255,.05) 0 75%,transparent 0)}
+.linhas line{stroke:#fff;stroke-opacity:.1}
+.foco-card::before,.tile::before{background:radial-gradient(260px circle at var(--mx) var(--my),rgba(255,255,255,.6),transparent 65%)}
+.foco-card::after,.tile::after{background:radial-gradient(320px circle at var(--mx) var(--my),rgba(255,255,255,.05),transparent 60%)}
+/* ===== SEQUÊNCIA DAS PEÇAS (peão -> rei), troca ligada ao scroll ===== */
+/* Para a sequência ficar mais lenta ou mais rápida, mude o 60 (altura de cada passo, em % da tela) */
+.pecas{--pg:16deg;position:relative;height:calc(var(--u)*(100 + var(--n,6)*60))}
+.pecas-palco{position:sticky;top:0;height:calc(var(--u)*100);overflow:hidden;z-index:2}
+.passo{position:absolute;inset:0;pointer-events:none;--ang:0deg;--sc:1;--vis:0;--o:0;--ty:0px}
+.passo:first-of-type{--vis:1;--o:1}
+
+/* caixa da peça: mesmo tamanho e mesmo lugar do rei fixo */
+.peca-box{--kh:54;position:absolute;left:50%;top:calc(var(--u)*47);height:calc(var(--u)*var(--kh));width:calc(var(--u)*var(--kh)*.6667);margin:calc(var(--u)*var(--kh)*-.5) 0 0 calc(var(--u)*var(--kh)*-.3333)}
+.peca-rei-fixo{display:none}
+
+/* o giro (rotateY) e a visibilidade vêm do JS, ligados ao scroll */
+.peca{position:absolute;inset:0;opacity:calc(var(--vis)*var(--rf,1));transform:perspective(900px) rotateY(calc(var(--ang) + var(--mx,0)*9deg)) rotateX(calc(var(--my,0)*-6deg)) scale(var(--sc));will-change:transform,opacity}
+
+/* inclinação para a direita + flutuação (igual ao rei do Contato, mas para o outro lado) */
+.peca-giro{position:absolute;inset:0;display:grid;place-items:center;transform:rotate(var(--pg));transform-origin:50% 85%;animation:peca-flutua 5.5s ease-in-out infinite}
+.pecas:not(.visivel) .peca-giro{animation-play-state:paused}
+@keyframes peca-flutua{
+  0%,100%{transform:translateY(0) rotate(var(--pg))}
+  50%{transform:translateY(-2.5%) rotate(calc(var(--pg) - 1.5deg))}
+}
+
+/* desenho provisório (some sozinho quando a imagem da peça existir) */
+.peca-glifo{font-family:"Segoe UI Symbol","Noto Sans Symbols 2","Apple Symbols","DejaVu Sans",sans-serif;font-size:calc(var(--u)*var(--kh)*.8);line-height:1;color:#e9e9e9}
+.peca-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;filter:drop-shadow(0 0 28px rgba(212,175,55,.3))}
+.peca.tem-img .peca-img{opacity:1}
+.peca.tem-img .peca-glifo{display:none}
+
+/* textos: título em negrito pesado, frase em itálico fino (sobem e somem conforme o scroll) */
+.peca-texto{position:absolute;left:max(6vw,20px);top:50%;width:min(30vw,460px);transform:translateY(-50%);translate:0 var(--ty);opacity:var(--o)}
+.peca-texto h2{font-size:clamp(2rem,4vw,3.6rem);line-height:1.05;margin:.2rem 0 1.1rem}
+.peca-texto .frase{font-style:italic;font-weight:300;color:#cfcfcf;font-size:clamp(1rem,1.5vw,1.2rem);line-height:1.7;max-width:34ch}
+
+/* índice na lateral direita e dica */
+.pecas-indice{position:absolute;right:max(3vw,18px);top:50%;translate:0 -50%;list-style:none;display:flex;flex-direction:column;gap:14px;text-align:right}
+.pecas-indice li{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:#5c5c5c;transition:color .4s}
+.pecas-indice li b{font-weight:500;margin-right:8px}
+.pecas-indice li.on{color:#fff}
+.pecas-dica{position:absolute;left:50%;bottom:4vh;translate:-50% 0;font-size:.7rem;letter-spacing:.28em;text-transform:uppercase;color:var(--mut)}
+
+/* ===== REI FIXO na sequência: entra girando, começa inclinado pra direita e se endireita ao ir pro canto ===== */
+.king > .rei-giro{perspective:900px}
+.king > .rei-giro > img{rotate:y var(--reiy,0deg)}
+.king.seq-on .rei-giro{transform:rotate(calc(var(--giro,0deg) + var(--pecagiro,0deg)))}
+.king.seq-on.rei-vis .rei-giro{animation:rei-flutua-seq 5.5s ease-in-out infinite}
+@keyframes rei-flutua-seq{
+  0%,100%{transform:translateY(0) rotate(var(--pecagiro,0deg))}
+  50%{transform:translateY(calc(var(--pf,0)*-2.5%)) rotate(calc(var(--pecagiro,0deg) - var(--pf,0)*1.5deg))}
+}
+
+/* celular em pé: peça no meio, texto embaixo */
+@media (max-aspect-ratio:1/1){
+  .pecas{--pg:8deg}
+  .peca-box{--kh:34}
+  .peca-texto{left:6vw;right:6vw;top:auto;bottom:calc(var(--u)*6);width:auto;transform:none}
+  .peca-texto h2{font-size:clamp(1.8rem,8vw,2.6rem)}
+  .pecas-indice li{font-size:0}
+  .pecas-indice li b{font-size:.72rem;margin:0}
+  .pecas-dica{display:none}
+}
+
+/* movimento reduzido: as 6 peças viram uma lista parada */
+@media (prefers-reduced-motion:reduce){
+  .king{display:none}
+  .pecas{height:auto;padding:12vh 0}
+  .pecas-palco{position:static;height:auto;overflow:visible}
+  .passo{position:static;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:4vw;padding:6vh 6vw;pointer-events:auto}
+  .peca-box{position:relative;left:auto;top:auto;margin:0;height:calc(var(--u)*40);width:calc(var(--u)*40*.6667);justify-self:center}
+  .peca{opacity:1;transform:none}
+  .peca-giro{animation:none}
+  .peca-rei-fixo{display:block;width:100%;height:100%;object-fit:contain}
+  .passo .peca-texto{position:static;transform:none;translate:none;opacity:1;width:auto}
+  .pecas-indice,.pecas-dica{display:none}
+}
+/* ===== 3D FALSO: chão (sombra + luz), reflexo, brilho que atravessa a peça, mouse ===== */
+.chao-box{pointer-events:none}
+.chao{position:absolute;inset:0;opacity:var(--rf,1)}
+/* poça de luz no piso (branca, bem fraca) */
+.piscina{position:absolute;left:50%;top:96.8%;width:calc(var(--sw,52%)*2.2);aspect-ratio:4/1;translate:calc(-50% + var(--mx,0)*-26px) -50%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.16),rgba(255,255,255,.05) 60%,transparent)}
+/* sombra de contato, embaixo da base: encolhe e clareia quando a peça flutua pra cima */
+.sombra{position:absolute;left:50%;top:96.8%;width:calc(var(--sw,52%)*.95);aspect-ratio:6/1;translate:calc(-50% + var(--mx,0)*-12px) -50%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.95),rgba(0,0,0,.6) 55%,transparent);animation:sombra-flutua 5.5s ease-in-out infinite}
+@keyframes sombra-flutua{0%,100%{scale:1;opacity:1}50%{scale:.88;opacity:.7}}
+.pecas:not(.visivel) .sombra{animation-play-state:paused}
+
+/* reflexo no chão: a própria peça de cabeça pra baixo, desbotando (aumente o .34 pra um reflexo mais forte) */
+.refl{position:absolute;inset:0;pointer-events:none;transform:scaleY(-1);transform-origin:50% 97.5%;translate:calc(var(--mx,0)*8px) 0;-webkit-mask-image:linear-gradient(to top,transparent 0,rgba(0,0,0,.34) 2.5%,transparent 30%);mask-image:linear-gradient(to top,transparent 0,rgba(0,0,0,.34) 2.5%,transparent 30%)}
+.refl-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0}
+.peca.tem-img .refl-img,.peca-rei .refl-img{opacity:1}
+
+/* faixa de luz com o formato da peça (aumente o .6 pra um brilho mais forte) */
+.peca-brilho,.rei-brilho{position:absolute;inset:0;z-index:2;pointer-events:none;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;background-image:linear-gradient(100deg,transparent 44%,rgba(255,255,255,.6) 50%,transparent 56%);background-size:300% 100%;background-position:calc(var(--br,50)*1%) 0;opacity:var(--bo,0)}
+.peca-brilho{-webkit-mask-image:var(--mask);mask-image:var(--mask)}
+.rei-brilho{display:none;-webkit-mask-image:url(/rei.webp);mask-image:url(/rei.webp)}
+.king.seq-on.rei-vis .rei-brilho{display:block}
+
+/* inclinação do rei fixo com o mouse, só durante a sequência (o valor 9 é a força) */
+.king.seq-on.rei-vis > .rei-giro > img{rotate:y calc(var(--reiy,0deg) + var(--mx,0)*9deg)}
+
+@media (prefers-reduced-motion:reduce){
+  .chao-box,.refl,.peca-brilho,.rei-brilho{display:none}
+}

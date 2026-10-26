@@ -1,0 +1,147 @@
+/* ===== ORDEM NOVA: o Sobre vem primeiro, depois "O que estou construindo" ===== */
+#sobre{padding:18vh 0 12vh}
+#foco{padding:10vh 0 12vh}
+
+/* ===== LENTE DO SOBRE ===== */
+.lente{position:relative;margin-bottom:1.4rem;cursor:crosshair;--lw:820px;--lh:420px;--lx:0px;--ly:0px}
+.lente-pilha{display:grid}
+.lente-pilha > *{grid-area:1/1}
+#sobre .lente-pilha h2{margin:0}
+
+/* camada dourada: só aparece dentro do quadrado (clip-path acompanha o mouse) */
+.lente-ouro{background:#050505;opacity:0;pointer-events:none;transition:opacity .25s ease;clip-path:inset(calc(var(--ly) - var(--lh)/2) calc(100% - var(--lx) - var(--lw)/2) calc(100% - var(--ly) - var(--lh)/2) calc(var(--lx) - var(--lw)/2))}
+.lente.on .lente-ouro{opacity:1}
+#sobre .lente-ouro h2{color:#d4af37}
+#sobre .lente-ouro h2 .it{color:#f1d77a}
+
+/* moldura fina do quadrado */
+.lente-moldura{position:absolute;left:0;top:0;width:var(--lw);height:var(--lh);transform:translate(calc(var(--lx) - var(--lw)/2),calc(var(--ly) - var(--lh)/2));border:1px solid rgba(212,175,55,.85);box-shadow:0 0 30px rgba(212,175,55,.16);opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:3}
+.lente.on .lente-moldura{opacity:1}
+
+/* celular/touch: sem lente, já mostra a versão dourada */
+.lente.toque{cursor:auto}
+.lente.toque .lente-ouro{opacity:1;clip-path:none}
+.lente.toque .lente-base{visibility:hidden}
+.lente.toque .lente-moldura{display:none}
+.lente.toque + .dica{display:none}
+
+#sobre .dica{font-size:.7rem;letter-spacing:.28em;text-transform:uppercase;color:var(--mut);margin-bottom:2.2rem}
+
+/* textos do Sobre entram ao rolar */
+.fade.seq{transition:opacity .9s ease calc(var(--i)*140ms),translate .9s cubic-bezier(.2,.7,.1,1) calc(var(--i)*140ms)}
+
+/* ===== CARDS COM PESO (o JS faz a inclinação, aqui só tiramos a transição de transform) ===== */
+.foco-card.seq.peso{transition:opacity .7s ease calc(var(--i)*120ms),translate .8s cubic-bezier(.2,.7,.1,1) calc(var(--i)*120ms),border-color .25s,box-shadow .4s ease;will-change:transform}
+.foco-card.peso:hover{box-shadow:inset 0 -18px 40px rgba(0,0,0,.55),0 12px 30px rgba(0,0,0,.4)}
+
+@media (prefers-reduced-motion:reduce){
+  .fade.seq{transition:none}
+}
+
+/* ===== SOBRE: texto de apresentação primeiro, lente depois ===== */
+#sobre .sobre-textos{margin-bottom:3.5rem}
+#sobre .dica{margin-bottom:0}
+
+/* ===== O QUE ESTOU CONSTRUINDO: AINDA MAIOR ===== */
+#foco{padding:20vh 0 22vh}
+#foco .wrap{max-width:1760px;grid-template-columns:minmax(340px,.9fr) 2.7fr;gap:clamp(40px,5.5vw,96px)}
+#foco h2{font-size:clamp(2.6rem,5.4vw,4.6rem);line-height:1.04;margin-bottom:1.6rem}
+#foco .label{font-size:.9rem}
+#foco .ponte{font-size:1.25rem;margin-bottom:2rem}
+#foco .lead{font-size:1.3rem;line-height:1.8;max-width:40ch;margin-bottom:2.6rem}
+#foco .btn{padding:22px 46px;font-size:1.1rem}
+#foco .foco-grid{gap:32px}
+#foco .foco-card{min-height:500px;padding:52px 40px;gap:22px;border-radius:22px}
+#foco .ico{width:76px;height:76px}
+#foco .ico svg{width:34px;height:34px}
+#foco .foco-card h3{font-size:1.6rem;margin-top:1rem}
+#foco .foco-card p{font-size:1.2rem;line-height:1.75}
+@media (max-width:1100px){
+  #foco .wrap{grid-template-columns:1fr}
+  #foco .foco-grid{grid-template-columns:1fr}
+  #foco .foco-card{min-height:0}
+}
+
+/* ===== CORREÇÃO: título não pode entrar no card ===== */
+#foco .wrap{grid-template-columns:minmax(0,1.1fr) minmax(0,2.5fr);gap:clamp(40px,5vw,88px)}
+#foco .foco-intro,#foco .foco-grid{min-width:0}
+#foco h2{font-size:clamp(2rem,3vw,3.2rem);line-height:1.06;overflow-wrap:anywhere}
+#foco .foco-card{min-width:0}
+#foco .foco-card p{overflow-wrap:break-word}
+
+/* ===== CENA DOS PROJETOS ===== */
+.cena{position:relative;width:100vw;margin-left:calc(50% - 50vw);margin-top:3rem;height:calc(var(--n,3)*95vh + 30vh)}
+.cena-palco{position:sticky;top:0;height:100vh;overflow:hidden}
+.mundo{position:absolute;left:50%;top:50%;width:0;height:0;will-change:transform}
+.fios{position:absolute;left:0;top:0;width:1px;height:1px;overflow:visible;z-index:0;pointer-events:none}
+
+.fio{fill:none;stroke:#fff;stroke-opacity:.14;stroke-width:1;stroke-dasharray:2 9;stroke-linecap:round;animation:fluxo 2.4s linear infinite;transition:stroke-opacity .5s}
+.fio.fino{stroke-opacity:.08}
+.fio.on{stroke-opacity:.6}
+.fio.fino.on{stroke-opacity:.35}
+.ponto{fill:#fff;fill-opacity:.35;transition:fill-opacity .5s}
+.ponto.on{fill-opacity:.9}
+@keyframes fluxo{to{stroke-dashoffset:-22}}
+
+.no{position:absolute;z-index:2;display:block;width:min(520px,78vw);color:inherit;text-decoration:none;background:rgba(10,10,10,.94);border:1px solid rgba(255,255,255,.14);border-radius:18px;overflow:hidden;opacity:.4;transform:translate(-50%,-50%) perspective(1200px) rotateY(var(--ry,0deg)) scale(.72);transition:transform .7s cubic-bezier(.2,.7,.1,1),opacity .6s ease,border-color .4s,box-shadow .4s;animation:flutua 6s ease-in-out infinite}
+.no.ativo{opacity:1;transform:translate(-50%,-50%) perspective(1200px) rotateY(0deg) scale(1);border-color:rgba(212,175,55,.55);box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 40px rgba(212,175,55,.08)}
+.no.ativo:hover{border-color:rgba(212,175,55,.9)}
+@keyframes flutua{50%{translate:0 -10px}}
+
+.no-texto{padding:22px 26px 26px;display:flex;flex-direction:column;gap:10px}
+.no h3{font-size:1.9rem;font-weight:300;letter-spacing:.06em;text-transform:uppercase;line-height:1.1}
+.no p{color:var(--mut);font-size:.95rem;line-height:1.7}
+.no-link{align-self:flex-start;margin-top:.4rem;font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;color:#d4af37}
+.no-link span{display:inline-block;transition:translate .25s ease}
+.no:hover .no-link span{translate:6px 0}
+
+.cena-indice{position:absolute;right:max(3vw,18px);top:50%;translate:0 -50%;list-style:none;display:flex;flex-direction:column;gap:14px;z-index:5;text-align:right}
+.cena-indice li{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:#5c5c5c;transition:color .4s}
+.cena-indice li b{font-weight:500;margin-right:8px}
+.cena-indice li.on{color:#fff}
+.cena-dica{position:absolute;left:50%;bottom:4vh;translate:-50% 0;z-index:5;font-size:.7rem;letter-spacing:.28em;text-transform:uppercase;color:var(--mut)}
+
+.cena:not(.visivel) .fio,.cena:not(.visivel) .no{animation-play-state:paused}
+
+@media (max-width:700px){
+  .cena-indice li{font-size:0}
+  .cena-indice li b{font-size:.72rem;margin:0}
+}
+@media (prefers-reduced-motion:reduce){
+  .cena{height:auto;margin-top:2rem}
+  .cena-palco{position:static;height:auto;overflow:visible}
+  .mundo{position:static;width:auto;height:auto;display:grid;gap:24px;padding:0 6vw}
+  .fios,.cena-indice,.cena-dica{display:none}
+  .no{position:static;width:100%;opacity:1;transform:none;animation:none}
+}
+/* ===== CENÁRIO: câmera do piso e feixe de luz ===== */
+div.tabuleiro{height:var(--alt,50vh)}
+div.tabuleiro > i{transform:perspective(800px) rotateX(var(--tilt,60deg))}
+
+.feixe{position:fixed;top:0;left:0;right:0;height:100vh;z-index:0;pointer-events:none;opacity:var(--feixe,1);
+  background:conic-gradient(from 158deg at 50% -4%,transparent 0deg,rgba(255,255,255,.12) 22deg,transparent 44deg);
+  -webkit-mask-image:linear-gradient(to bottom,#000 10%,transparent 85%);
+  mask-image:linear-gradient(to bottom,#000 10%,transparent 85%)}
+  /* ===== CONTATO: rei inclinado + lente dourada ===== */
+.king .rei-giro{position:absolute;inset:0;display:block;transform:rotate(var(--giro,0deg));transform-origin:50% 85%}
+.king.inclinado .rei-giro{animation:rei-flutua 5.5s ease-in-out infinite}
+@keyframes rei-flutua{
+  0%,100%{transform:translateY(0) rotate(var(--giro,0deg))}
+  50%{transform:translateY(calc(var(--flut,0)*-2.5%)) rotate(calc(var(--giro,0deg) - var(--flut,0)*1.5deg))}
+}
+
+/* cópia dourada do rei: só aparece dentro do quadrado (clip-path feito no JS) */
+.king .rei-ouro{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;clip-path:inset(50% 50% 50% 50%);transition:opacity .25s ease}
+.king.lente-on .rei-ouro{opacity:1}
+.king .rei-ouro img{opacity:1;filter:sepia(.9) saturate(2.1) hue-rotate(6deg) brightness(.98) contrast(1.05) drop-shadow(0 0 16px rgba(212,175,55,.3))}
+
+/* moldura fina do quadrado */
+.lente-rei{position:fixed;left:0;top:0;width:240px;height:240px;z-index:45;pointer-events:none;border:1px solid rgba(212,175,55,.85);box-shadow:0 0 30px rgba(212,175,55,.16);opacity:0;transition:opacity .25s ease}
+.lente-rei.on{opacity:1}
+@media (hover:none),(prefers-reduced-motion:reduce){.lente-rei{display:none}}
+
+/* textos do contato: dourado só no ponto do selo e nos botões */
+#contato .status{color:#cfcfcf}
+#contato .lance{border-top-color:rgba(255,255,255,.15)}
+/* some a casa dourada quando o rei está no Contato */
+.king.saiu.inclinado .casa{opacity:0}

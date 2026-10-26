@@ -1,0 +1,97 @@
+# CONTEXTO DO PROJETO
+
+Estou reformulando o meu portfólio pessoal. Sou o Maruã, tenho 20 anos, quero entrar na área de social media (foco em estratégia de perfil: o que postar, em qual formato, quantas vezes e em quais dias) e estou estudando a área. Também crio sistemas com IA para resolver problemas reais. Não sou desenvolvedor: os projetos foram feitos com IA, e eu decidi a ideia, o problema e o que entra em cada um. O site não pode afirmar nada além disso.
+
+Stack: Next.js (App Router), GSAP + ScrollTrigger, CSS puro. Arquivos: app/page.js, app/globals.css, app/efeitos.js, app/efeitos.css, app/layout.js.
+
+# O QUE NÃO PODE SER ALTERADO
+
+- O hero (vídeo hero.mp4 + "Maruã" gigante + rei de xadrez) e o menu.
+- A animação do rei feita em page.js (entrada, movimento no scroll, casa dourada).
+- O arquivo efeitos.js. Efeitos novos vão em um arquivo novo: app/interativo.js.
+
+# IDENTIDADE VISUAL
+
+- Fundo preto, tipografia Montserrat, com contraste entre negrito pesado e itálico fino (peso 300).
+- REGRA DO DOURADO: dourado (#d4af37 / #f1d77a) aparece só em (1) botões e (2) tudo o que a "lente" revela. Fora isso, branco e cinza.
+- Referências: studiomirage.io (textura/grão), aengel.io (lente quadrada que revela outra versão), gertix.studio (painéis que empilham no scroll), junkbranding.com (telas flutuando ligadas por pontos e linhas).
+- O site inteiro é voltado ao universo do xadrez, mas o texto do Sobre começa neutro, falando só de social media.
+
+# CENÁRIO (fundo contínuo do site)
+
+- Conceito: um salão escuro de torneio de xadrez. O cenário é fixo atrás de todas as seções, e o scroll move uma "câmera" por ele.
+- Elementos: piso de tabuleiro em perspectiva (já existe em .tabuleiro), feixe de luz vindo do topo (como no hero), poeira branca flutuando no feixe (canvas 2D) que se afasta do cursor.
+- Câmera por seção (CSS 3D, mudar o rotateX do piso conforme o scroll com GSAP):
+  1) Hero e Sobre: visão baixa, piso em perspectiva forte (~60deg).
+  2) O que estou construindo: o piso começa a se inclinar.
+  3) Jogadas que já fiz: vista quase de cima (~15-20deg); os projetos ficam sobre casas do tabuleiro, ligados por pontos e linhas finas que se acendem (movimentos de peça).
+  4) Contato: câmera volta à visão baixa; rei flutuando na diagonal.
+- Cores: poeira, linhas e pontos em branco/cinza; dentro da lente ficam dourados.
+- Sem WebGL nem three.js. Canvas 2D + CSS 3D.
+- Desempenho: poeira com no máximo ~60 partículas, pausada fora da tela, desligada em touch/celular e com prefers-reduced-motion (piso estático).
+- Não alterar o hero nem a animação do rei; o piso atual (.tabuleiro) só ganha a variação de ângulo no scroll.
+
+# ORDEM DAS SEÇÕES
+
+1. HERO (intocado)
+2. SOBRE
+3. O QUE ESTOU CONSTRUINDO
+4. FAIXA DOURADA (marquee)
+5. JOGADAS QUE JÁ FIZ (projetos)
+6. CONTATO
+
+# DETALHE DE CADA SEÇÃO
+
+## 1. Hero
+Sem mudanças.
+
+## 2. Sobre
+- Título base (visível por padrão, SEM tema de xadrez): um texto neutro explicando o que é social media (estratégia de conteúdo, posicionamento, decidir o que postar e quando). Escrever em tom simples e direto.
+- LENTE: um quadrado/retângulo de borda fina segue o mouse sobre o título. Dentro dele, o título troca para a versão dourada: "Social media é um jogo de posição e estratégia, e eu estou estudando e criando a ferramenta para jogá-lo."
+- Implementar com duas camadas do mesmo título, a de cima em dourado com clip-path acompanhando o cursor (suavizado com gsap.quickTo).
+- O parágrafo abaixo permanece como está: "Sou o Maruã, tenho 20 anos e quero construir minha carreira em social media, com foco na parte estratégica do perfil: o que postar, em qual formato, quantas vezes e em quais dias. Gosto de xadrez porque tudo tem um porquê, e vejo o mesmo aqui: cada post, vídeo, card ou story tem uma estratégia por trás." + "Ainda estou estudando a área. No caminho, crio sistemas com IA, decidindo cada passo."
+- Ao rolar, o texto entra com animação (palavras subindo de uma máscara, parágrafos com fade + deslocamento).
+- Celular/touch: sem lente; o título aparece já na versão dourada ou a lente se move sozinha, devagar.
+
+## 3. O que estou construindo
+- Textos permanecem: eyebrow "MEU FOCO", título "O que estou construindo", texto "Quero entrar em social media e estudo a parte estratégica todo dia. Enquanto isso, crio sistemas com IA pra resolver problemas reais.", botão "Ver meus projetos" (dourado).
+- 3 cards: "Sistemas com IA", "Social media", "Ferramentas próprias" (textos atuais mantidos).
+- Os cards entram em sequência com animação ao rolar.
+- Hover com efeito de PESO: o ponto onde o mouse encosta afunda o card (inclinação 3D invertida, o card "vai para trás" na ponta tocada), com retorno suave ao sair, mais brilho radial que segue o cursor. O brilho dessa área é branco/neutro.
+
+## 4. Faixa dourada
+- Faixa correndo da direita para a esquerda, borda fina dourada em cima e embaixo, texto dourado: "Xadrez · Estratégia de perfil · Social media".
+- Posição: logo depois de "O que estou construindo" e antes dos projetos.
+
+## 5. Jogadas que já fiz
+- Eyebrow "TRABALHOS", título "Jogadas que já fiz", subtítulo "Sistemas que criei com IA pra resolver problemas reais."
+- Cena estilo junkbranding, em 2D/CSS/canvas (SEM WebGL e SEM três.js): os projetos viram telas flutuando com profundidade, ligadas por pontos e linhas finas que se acendem. O scroll conduz a "câmera" de uma tela para a próxima; um índice lateral (01 / 02 / 03) mostra onde o usuário está.
+- Projetos (usar APENAS os logos, sem vídeo): MT (/projetos/mt.png), Routine (/projetos/routine.png), Linha Imóveis (/projetos/linha.webp). Cada tela mostra o logo, a tag, o título e a descrição curta.
+- MT: "Próprio · beta · feito com IA" - sistema de gestão para agências de social media (clientes, calendário editorial, funil de produção, financeiro e equipes), em beta, com APIs a caminho. Link: https://mth-sooty.vercel.app/login
+- Routine: "Próprio · feito com IA" - app instalável para organizar a rotina (espiritual, financeiro, hábitos, obrigações do dia), criado para substituir o Notion. Link: https://routine-app-seven-alpha.vercel.app/
+- Linha Imóveis: "Estudo de layout" - landing page fictícia de uma imobiliária. Link: https://indexhtml-flax-mu.vercel.app/
+- O código deve aceitar um quarto projeto só adicionando um item ao array PROJETOS (decisão futura).
+- Clicar na tela abre o link do projeto em nova aba.
+
+## 6. Contato
+- Título "Vamos conversar?" (parte em negrito, parte em itálico fino), selo "Aberto a conversas" com ponto dourado pulsando, subtítulo "Quer trocar ideia sobre social media ou sobre um projeto? Me chama.", botão dourado "Chamar no WhatsApp →" e a frase "Fim de partida, começo de conversa."
+- O rei flutua inclinado em diagonal, com leve movimento de flutuação.
+- LENTE sobre o rei: passando o quadrado, o rei fica dourado dentro da lente. Fazer com uma cópia do rei com filtro dourado, recortada pelo clip-path da lente.
+- ATENÇÃO: é o mesmo rei animado no resto da página. Mudar a inclinação dele só na seção do contato, sem quebrar o movimento atual. Esta é a etapa de maior risco e vem por último.
+
+# REGRAS TÉCNICAS
+
+- Desempenho: desligar lente, linhas e pontos em touch/celular; pausar o que estiver fora da tela (IntersectionObserver); respeitar prefers-reduced-motion; evitar sombras e filtros pesados em muitos elementos.
+- Fonte: confirmar no layout.js que a Montserrat carrega o peso 300 e o estilo itálico (a lente e os títulos dependem disso).
+- Não inventar números, clientes, resultados ou cargos. Tudo o que for texto sobre mim segue o que está neste documento.
+- Dados reais (e-mails, nomes de clientes, valores) não podem aparecer em nenhuma imagem do site.
+
+# COMO ENTREGAR
+
+- Entregar ARQUIVOS COMPLETOS para eu copiar e colar por cima (nada de "procure este trecho"): page.js, globals.css, e o novo interativo.js (mais efeitos.css só se for realmente necessário).
+- Fazer em 3 rodadas, esperando meu teste entre elas:
+  1) Sobre com lente + animações de entrada + cards com efeito de peso + faixa reposicionada
+  2) Cena de projetos com telas flutuantes e pontos ligados
+  3) Contato com rei inclinado e lente dourada
+- Antes de cada rodada, lembrar de eu fazer cópia da pasta do projeto.
+- Se algo puder quebrar o hero ou a animação do rei, avisar antes e propor alternativa.
